@@ -16,7 +16,7 @@ include("barramenu.php");
 
 
 ?>
-<h1><?php echo $_SESSION["canal_id"] ?></h1>
+<!-- <h1><?php echo $_SESSION["canal_id"] ?></h1> -->
  
 <!-- 
 <p><form name="form"></form><div id="info"> </div></p>
