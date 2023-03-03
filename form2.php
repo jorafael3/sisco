@@ -3,64 +3,103 @@
 
 <?php
 session_start();
-$usuario = $_SESSION["usuario"] ;
-$canal = $_SESSION["canal"] ;
-if ($canal=="CallCenter")
-	{
-		$vcanal = 1;
-	}
-else
-	{
-		if ($canal=="OnLine")
-			{
-				$vcanal = 0;
-			}
-		else
-			{
-				$vcanal = 2;
-			}
-	}
+$usuario = $_SESSION["usuario"];
+$canal = $_SESSION["canal_id"];
+$vcanal = $canal;
+// if ($canal=="CallCenter")
+// 	{
+// 		$vcanal = 1;
+// 	}
+// else
+// 	{
+// 		if ($canal=="OnLine")
+// 			{
+// 				$vcanal = 0;
+// 			}nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+// 		else
+// 			{
+// 				$vcanal = 2;
+// 			}
+// 	}
 require("conexion.php");
 date_default_timezone_set('America/Guayaquil');
 $fecha = date("y-m-d", time());
 $hora = date("H:i:s", time());
 $fh = $fecha . " " . $hora;
 
-if (!isset($_SESSION["usuario"])) {header("Location: index1.php");}
-//include("barramenu.php");
-if ($_SESSION["nivel"]=='99'){die( "<br><br><h2>No tiene acceso a esta opción!</h2>");}
+if (!isset($_SESSION["usuario"])) {
+    header("Location: index1.php");
+}
+//include("barramenu.html");
+if ($_SESSION["nivel"] == '99') {
+    die("<br><br><h2>No tiene acceso a esta opción!</h2>");
+}
 
 //die("<br><br><br><br><br>xxx".$canal." - ".$vcanal);
-$nombre=$_POST['nombre'];
-$cedula=$_POST['cedula'];
-$celular=$_POST['celular'];
-$ciudad=$_POST['listciudad'];  
-$direccion=$_POST['direccion'];
-$referencia=$_POST['referencia'];
-$compra=$_POST['compra'];
-$pago=$_POST['pago'];
-$ordenweb=$_POST['ordenweb'];
-$mail=$_POST['mail'];
-$vendedor=$_POST['vendedor'];
-$total=$_POST['total'];
-if ($total<=1){die("<br><br><br>Regrese y complete el valor total de la compra...");}
-$comentarios=$_POST['comentarios'];
-$despacho=$_POST['despacho'];
-if (isset($_POST['numcuotas'])){$numcuotas = $_POST['numcuotas'];} else {$numcuotas =0;}
-if (isset($_POST['valcuotas'])){$valcuotas = $_POST['valcuotas'];} else {$valcuotas =0;}
-$ingresocli=$_POST['ingresocli'];
-if (isset($_POST['bodega'])){$bodega = $_POST['bodega'];} else {$bodega ='';}
-if (isset($_POST['provincia'])){$provincia = $_POST['provincia'];} else {$provincia ='';}
-if (isset($_POST['tipotarjeta']) and $pago=='Tarjeta'){$tipotarjeta = $_POST['tipotarjeta'];} else {$tipotarjeta ='';}
-if (isset($_POST['linktopay'])){$linktopay = $_POST['linktopay'];} else {$linktopay ='';}
+$nombre = $_POST['nombre'];
+$cedula = $_POST['cedula'];
+$celular = $_POST['celular'];
+$ciudad = $_POST['listciudad'];
+$direccion = $_POST['direccion'];
+$referencia = $_POST['referencia'];
+$compra = $_POST['compra'];
+$pago = $_POST['pago'];
+$ordenweb = $_POST['ordenweb'];
+$mail = $_POST['mail'];
+$vendedor = $_POST['vendedor'];
+$total = $_POST['total'];
+if ($total <= 1) {
+    die("<br><br><br>Regrese y complete el valor total de la compra...");
+}
+$comentarios = $_POST['comentarios'];
+$despacho = $_POST['despacho'];
+if (isset($_POST['numcuotas'])) {
+    $numcuotas = $_POST['numcuotas'];
+} else {
+    $numcuotas = 0;
+}
+if (isset($_POST['valcuotas'])) {
+    $valcuotas = $_POST['valcuotas'];
+} else {
+    $valcuotas = 0;
+}
+$ingresocli = $_POST['ingresocli'];
+if (isset($_POST['bodega'])) {
+    $bodega = $_POST['bodega'];
+} else {
+    $bodega = '';
+}
+if (isset($_POST['provincia'])) {
+    $provincia = $_POST['provincia'];
+} else {
+    $provincia = '';
+}
+if (isset($_POST['tipotarjeta']) and $pago == 'Tarjeta') {
+    $tipotarjeta = $_POST['tipotarjeta'];
+} else {
+    $tipotarjeta = '';
+}
+if (isset($_POST['linktopay'])) {
+    $linktopay = $_POST['linktopay'];
+} else {
+    $linktopay = '';
+}
 
-if (isset($_POST['bodega1'])){$ordenbodegaf = $_POST['bodega1'];} else {$ordenbodegaf ='';}
+if (isset($_POST['bodega1'])) {
+    $ordenbodegaf = $_POST['bodega1'];
+} else {
+    $ordenbodegaf = '';
+}
 
 //die("<br><br><br>Coment-".$comentarios."-Despa-".$despacho."-Prov-".$provincia."-bodega-".$bodega);
 
 //die("<br><br><br><br>Tarj:".$tipotarjeta);
 
-if ($despacho == 'Pickup'){$pickup=1;} else {$pickup=0;}
+if ($despacho == 'Pickup') {
+    $pickup = 1;
+} else {
+    $pickup = 0;
+}
 
 include("conexion.php");
 
@@ -70,7 +109,7 @@ switch ($pago) {
     case "Tarjeta":
         $estado = "Tarjeta";
         break;
-	case "Tienda":
+    case "Tienda":
         $estado = "Tienda";
         break;
     case "Paymentez":
@@ -93,9 +132,9 @@ switch ($pago) {
 $sqlcheck = "select * from covidsales where `cedula`='$cedula' and `nombres`='$nombre'  and `venta`='$compra' and `referencias`='$referencia'
 and `valortotal`='$total' and `mail`='$mail' and `direccion`='$direccion' and `ordenweb`='$ordenweb'   ";
 $resultcheck = mysqli_query($con, $sqlcheck);
-$countcheck=mysqli_num_rows($resultcheck);
+$countcheck = mysqli_num_rows($resultcheck);
 
- //if ($countcheck <>'0') {die("<br><br><br><h2>Error, orden duplicada!</h2>");}
+//if ($countcheck <>'0') {die("<br><br><br><h2>Error, orden duplicada!</h2>");}
 
 
 

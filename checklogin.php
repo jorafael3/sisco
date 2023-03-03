@@ -26,26 +26,32 @@ $result = mysqli_query($con, $sql);
 
 
 while ($row = mysqli_fetch_array($result)) {
+      echo "<pre>";
+      print_r($row);
+      echo "</pre>";
+
       $nivel = $row['nivel'];
       $usuario = $row['usuario'];
-      $ca = $row['canal'];
+      $ca = (int)$row["canal"];
+      // // $canal = "asdasd";
       if ($ca == 1) {
-            $canal = "CallCenter";
+            $ca = "CallCenter";
       } else if ($ca == 2) {
-            $canal = "WEB";
+            $ca = "WEB";
       } else if ($ca == 0) {
-            $canal = "OnLine";
-      } else if ($canal == 3) {
-            $canal = 'Proveedor1';
-      } else if ($canal == 4) {
-            $canal = 'Proveedor2';
-      } else if ($canal == 5) {
-            $canal = 'Proveedor3';
+            $ca = "OnLine";
+      } else if ($ca == 3) {
+            $ca = 'Proveedor1';
+      } else if ($ca == 4) {
+            $ca = 'Proveedor2';
+      } else if ($ca == 5) {
+            $ca = 'Proveedor3';
       }
 
       $_SESSION["nivel"] = $nivel;
       $_SESSION["usuario"] = $usuario;
-      $_SESSION["canal"] = $canal;
+      $_SESSION["canal"] = $ca;
+      echo  $_SESSION["canal"];
       $_SESSION["canal_id"] = $row['canal'];
 }
 

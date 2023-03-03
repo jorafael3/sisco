@@ -58,7 +58,7 @@ if ($_SESSION["canal_id"] > 2) {
   on a.secuencia = b.transaccion 
   where a.factura ='' and a.estado='Enviar Docs.' 
   and a.anulada <>'1' 
-  and a.aprobadocc='' and a.canal = ".$_SESSION["canal_id"]." order by secuencia desc ";
+  and a.aprobadocc='' and a.canal = " . $_SESSION["canal_id"] . " order by secuencia desc ";
 } else {
   $sql = "
   SELECT a.secuencia, a.cedula, a.nombres, a.celular, a.ciudad, a.venta, a.direccion, a.referencias, a.formapago, a.fecha,
@@ -98,8 +98,11 @@ echo "<br><table border=1 cellpadding=10 cellspacing=0 width = 90% align='center
 <th align=center width= 10% >Factura</th>
 
 <th align=center width=  5% >Ver</th><tr>";
+echo "asdasdasd";
+
 while ($row = mysqli_fetch_array($result)) {
   $sec = $row['secuencia'];
+
 
   // solo permito modificar mientras no este facturado. Luego ya no puedo modificar
   //if ($row['factura']=='' and $nivel<>'99')
@@ -118,18 +121,22 @@ while ($row = mysqli_fetch_array($result)) {
   echo "<td>" . $row['vendedor'] . "</td>";
   echo "<td>" . $row['fecha'] . "</td>";
 
-
   //solo permito que cajero aplique factura y solo cuando los metodos de pago  Tarjeta de credito
   //if ( ($row['estado']=="Paymentez" or $row['estado']=="Tarjeta" or $row['estado']=="Transferencia" ) and ($nivel == "20" and $row['factura']==""))
   if ($row['canal'] == '0') {
     $canal = 'Online';
-  } else {
-    if ($row['canal'] == '1') {
-      $canal = 'CallCenter';
-    } else {
-      $canal = 'WEB';
-    }
+  } else if ($row['canal'] == '1') {
+    $canal = 'CallCenter';
+  } else if ($row['canal'] == '2') {
+    $canal = 'WEB';
+  } else if ($row['canal'] == 3) {
+    $ca = 'Proveedor1';
+  } else if ($row['canal'] == 4) {
+    $ca = 'Proveedor2';
+  } else if ($row['canal'] == 5) {
+    $ca = 'Proveedor3';
   }
+
   if (($row['estado'] == "Enviar Docs.") and (($nivel == "20" or  $nivel == "28" or  $nivel == "40") and $row['factura'] == "" and $row['aprobadocc'] == "")) {
     echo "<td> <a href=apruebacccd1.php?sec=$sec> Falta aprobar<br> $canal </td>";
   } else {

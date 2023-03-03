@@ -74,7 +74,7 @@
 
 	include("../conexion.php");
 
-	if ($_SESSION["canal_id"] > 2) {
+	if ($_SESSION["canal_id"] == 2) {
 		if (isset($_POST['fecha1'])  or isset($_GET['fecha1'])) {
 			if ($_POST['tiporeporte'] == 'Ingresadas') {
 				$tipofecha = "fecha";
@@ -92,7 +92,7 @@
 			and despachofinal like '$despacho' 
 			and formapago like '$formapago' 
 			and comollego like '$comollego'
-			and anulada<>'1' and canal = ".$_SESSION["canal_id"]."
+			and anulada<>'1' and canal = " . $_SESSION["canal_id"] . "
 			GROUP BY vendedor";
 
 
@@ -103,7 +103,7 @@
 			convert($tipofecha,date) between '$myfecha11' and '$myfecha21'
 			and vendedor like '$vendedor' 
 			and despachofinal like '$despacho' and formapago like '$formapago' and comollego 
-			like '$comollego'and anulada<>'1' and canal = ".$_SESSION["canal_id"]."
+			like '$comollego'and anulada<>'1' and canal = " . $_SESSION["canal_id"] . "
 			GROUP BY vendedor";
 
 			$sqlven2 = "SELECT SUM(v.valortotal) AS Total,
@@ -113,7 +113,7 @@
 			convert($tipofecha,date) between '$myfecha11' and '$myfecha21'
 			and vendedor like '$vendedor' 
 			and despachofinal like '$despacho' and formapago like '$formapago' and comollego 
-			like '$comollego'and anulada<>'1' and canal = ".$_SESSION["canal_id"]."
+			like '$comollego'and anulada<>'1' and canal = " . $_SESSION["canal_id"] . "
 			GROUP BY vendedor";
 
 
@@ -135,10 +135,10 @@
 					where
 					convert($tipofecha,date) between '$myfecha11' and '$myfecha21'
 					and anulada<>'1'
-					and canal = ".$_SESSION["canal_id"]."
+					and canal = " . $_SESSION["canal_id"] . "
 					GROUP BY comollego ";
 		}
-	} else {
+	} else if ($_SESSION["canal_id"] < 2) {
 
 		if (isset($_POST['fecha1'])  or isset($_GET['fecha1'])) {
 			if ($_POST['tiporeporte'] == 'Ingresadas') {
@@ -197,15 +197,49 @@
 					convert($tipofecha,date) between '$myfecha11' and '$myfecha21'
 					and anulada<>'1'GROUP BY comollego ";
 		}
+	} else if ($_SESSION["canal_id"] >= 3) {
+
+		$sqlven0 = "SELECT SUM(v.valortotal) AS Total,
+			v.vendedor AS Vendedor
+			FROM covidsales v 
+			where
+			convert($tipofecha,date) between '$myfecha11' and '$myfecha21'
+			and vendedor like '$vendedor' 
+			and despachofinal like '$despacho' and formapago like '$formapago' and comollego 
+			like '$comollego'and anulada<>'1' and canal =0
+			GROUP BY vendedor";
+
+		$sqlven3 = "SELECT   v.comollego AS comollego, fp.Directo,fp.Tienda, fp.LinktoPay, fp.Transferencia, fp.Paymentez, fp.Tarjeta
+					FROM covidsales v 
+					inner join (select  comollego, 
+					sum(case when formapago='Directo' then valortotal else 0 end )as Directo,
+					sum(case when formapago='Tienda' then valortotal else 0 end )as Tienda,
+					sum(case when formapago='LinkToPay' then valortotal else 0 end) as LinktoPay,
+					sum(case when formapago='Transferencia' then valortotal else 0 end) as Transferencia,
+					sum(case when formapago='Paymentez' then valortotal else 0 end) as Paymentez,
+					sum(case when formapago='Tarjeta' then valortotal else 0 end) as Tarjeta
+					from covidsales where 
+					convert($tipofecha,date) between '$myfecha11' and '$myfecha21' and anulada<>'1'
+					group by comollego) fp on fp.comollego = v.comollego
+					where
+					convert($tipofecha,date) between '$myfecha11' and '$myfecha21'
+					and anulada<>'1'GROUP BY comollego ";
 	}
 
 	// echo "<br><br><br>" . $sqlven0;
 	// echo "<br><br><br>" . $sqlven1;
 
-	$resultven0 = mysqli_query($con, "$sqlven0");
-	$resultven1 = mysqli_query($con, "$sqlven1");
-	$resultven2 = mysqli_query($con, "$sqlven2");
-	$count = mysqli_num_rows($resultven0) + mysqli_num_rows($resultven1) + +mysqli_num_rows($resultven2);
+	if ($_SESSION["canal_id"] <= 2) {
+		$resultven0 = mysqli_query($con, "$sqlven0");
+		$resultven1 = mysqli_query($con, "$sqlven1");
+		$resultven2 = mysqli_query($con, "$sqlven2");
+		$count = mysqli_num_rows($resultven0) + mysqli_num_rows($resultven1) + +mysqli_num_rows($resultven2);
+	} else {
+		$resultven0 = mysqli_query($con, "$sqlven0");
+		$count = mysqli_num_rows($resultven0);
+	}
+
+
 	// $result = mysqli_query($con,"$sql");
 	// $count=mysqli_num_rows($result);
 	//echo "<br>->:".$sql."<br>";
@@ -223,39 +257,56 @@
 		$tot1 = 0;
 		$tot2 = 0;
 		$contador = 0;
-		while ($rowven0 = mysqli_fetch_array($resultven0)) {
-			$contador = $contador + 1;
-			echo "<td>" . $contador . "</td>";
-			echo "<td>" . $rowven0['Vendedor'] . "</td>";
-			echo "<td>" . number_format($rowven0['Total'], 2) . "</td></tr>";
-			$tot0 = $tot0 + $rowven0['Total'];
-		}
-		$totalonline = $contador;
-		echo "<td><b>Total Vendedores ONLINE: <b> $contador</td><td><b>TOTAL ONLINE:</b></td><td><b>" . number_format($tot0, 2) . "</b></td></tr>";
-		$contador = 0;
-		while ($rowven1 = mysqli_fetch_array($resultven1)) {
-			$contador = $contador + 1;
-			echo "<td>" . $contador . "</td>";
-			echo "<td>" . $rowven1['Vendedor'] . "</td>";
-			echo "<td>" . number_format($rowven1['Total'], 2) . "</td></tr>";
-			$tot1 = $tot1 + $rowven1['Total'];
-		}
-		$totalcallcenter = $contador;
-		//		$totalvendedores = $totalcallcenter + $totalonline;
-		echo "<td><b>Total Vendedores CALLCENTER: <b> $contador</td><td><b>TOTAL CALLCENTER: </b></td><td><b>" . number_format($tot1, 2) . "</b></td></tr>";
-		//		$totg = $tot1 + $tot0;
-		//		echo "<td><b>Total Vendedores : <b> $totalvendedores</td><td><b>TOTAL ONLINE + CALLCENTER: </b></td><td><b>" . number_format($totg, 2) . "</b></td></tr>";
+		if ($_SESSION["canal_id"] <= 2) {
+			// echo "NORMAL";
+			while ($rowven0 = mysqli_fetch_array($resultven0)) {
+				$contador = $contador + 1;
+				echo "<td>" . $contador . "</td>";
+				echo "<td>" . $rowven0['Vendedor'] . "</td>";
+				echo "<td>" . number_format($rowven0['Total'], 2) . "</td></tr>";
+				$tot0 = $tot0 + $rowven0['Total'];
+			}
+			$totalonline = $contador;
+			echo "<td><b>Total Vendedores ONLINE: <b> $contador</td><td><b>TOTAL ONLINE:</b></td><td><b>" . number_format($tot0, 2) . "</b></td></tr>";
+			$contador = 0;
+			while ($rowven1 = mysqli_fetch_array($resultven1)) {
+				$contador = $contador + 1;
+				echo "<td>" . $contador . "</td>";
+				echo "<td>" . $rowven1['Vendedor'] . "</td>";
+				echo "<td>" . number_format($rowven1['Total'], 2) . "</td></tr>";
+				$tot1 = $tot1 + $rowven1['Total'];
+			}
+			$totalcallcenter = $contador;
+			//		$totalvendedores = $totalcallcenter + $totalonline;
+			echo "<td><b>Total Vendedores CALLCENTER: <b> $contador</td><td><b>TOTAL CALLCENTER: </b></td><td><b>" . number_format($tot1, 2) . "</b></td></tr>";
+			//		$totg = $tot1 + $tot0;
+			//		echo "<td><b>Total Vendedores : <b> $totalvendedores</td><td><b>TOTAL ONLINE + CALLCENTER: </b></td><td><b>" . number_format($totg, 2) . "</b></td></tr>";
+	
+			$contador = 0;
+			while ($rowven2 = mysqli_fetch_array($resultven2)) {
+				$contador = $contador + 1;
+				echo "<td>" . $contador . "</td>";
+				echo "<td>" . $rowven2['Vendedor'] . "</td>";
+				echo "<td>" . number_format($rowven2['Total'], 2) . "</td></tr>";
+				$tot2 = $tot2 + $rowven2['Total'];
+			}
+			$totalweb = $contador;
+			
+			$totalvendedores = $totalcallcenter + $totalonline + $totalweb;
+		} else {
 
-		$contador = 0;
-		while ($rowven2 = mysqli_fetch_array($resultven2)) {
-			$contador = $contador + 1;
-			echo "<td>" . $contador . "</td>";
-			echo "<td>" . $rowven2['Vendedor'] . "</td>";
-			echo "<td>" . number_format($rowven2['Total'], 2) . "</td></tr>";
-			$tot2 = $tot2 + $rowven2['Total'];
+			while ($rowven0 = mysqli_fetch_array($resultven0)) {
+				$contador = $contador + 1;
+				echo "<td>" . $contador . "</td>";
+				echo "<td>" . $rowven0['Vendedor'] . "</td>";
+				echo "<td>" . number_format($rowven0['Total'], 2) . "</td></tr>";
+				$tot0 = $tot0 + $rowven0['Total'];
+			}
+			$totalonline = $contador;
+			echo "<td><b>Total Vendedores ONLINE: <b> $contador</td><td><b>TOTAL ONLINE:</b></td><td><b>" . number_format($tot0, 2) . "</b></td></tr>";
+			$totalvendedores = $totalcallcenter;
 		}
-		$totalweb = $contador;
-		$totalvendedores = $totalcallcenter + $totalonline + $totalweb;
+		
 		echo "<td><b>Total Vendedores WEB: <b> $contador</td><td><b>TOTAL WEB: </b></td><td><b>" . number_format($tot2, 2) . "</b></td></tr>";
 		$totg = $tot1 + $tot0 + $tot2;
 		echo "<td><b>Total Vendedores : <b> $totalvendedores</td><td><b>TOTAL ONLINE + CALLCENTER: </b></td><td><b>" . number_format($totg, 2) . "</b></td></tr>";
@@ -266,6 +317,8 @@
 
 	$resultven3 = mysqli_query($con, "$sqlven3");
 	$count1 = mysqli_num_rows($resultven3);
+
+
 
 	if ($count1 == 0) {
 		echo "No hay registros anteriores! ";
