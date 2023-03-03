@@ -34,20 +34,20 @@ $result1 = mysqli_query($con, $sqlconsulta);
 
 // if ($incompleto ==0)
 // {
-// if (mysqli_num_rows($result1)>0)
-// 	{
-// 	echo "<h3>Error: Usuario ya existente...</h3>";
-// 	}
-// 	else
-// 	{
-// 	//----- Aqui grabo en la base los datos del usuario nuevo ---//
-// 	$sqlCrea = "insert  into  covidusuarios (usuario, clave, nivel, activo, canal, nombres, celular, mail, provincia, bodega) 
-// 	Values ('$usuario', '$password', '$nivel', '1' , '$c','$nombres', '$celular', '$mail', '$provincia' , '$bodega')";
+if (mysqli_num_rows($result1)>0)
+	{
+	echo "<h3>Error: Usuario ya existente...</h3>";
+	}
+	else
+	{
+	//----- Aqui grabo en la base los datos del usuario nuevo ---//
+	$sqlCrea = "insert  into  covidusuarios (usuario, clave, nivel, activo, canal, nombres, celular, mail, provincia, bodega) 
+	Values ('$usuario', '$password', '$nivel', '1' , '$c','$nombres', '$celular', '$mail', '$provincia' , '$bodega')";
 
-// 	$result = mysqli_query($con, $sqlCrea); /// Para MySQL 
-// 	mysqli_close($con);
-// 	echo "<h3>Usuario creado correctamente...</h3>";
-// 	}
+	$result = mysqli_query($con, $sqlCrea); /// Para MySQL 
+	mysqli_close($con);
+	echo "<h3>Usuario creado correctamente...</h3>";
+	}
 // }
 
 //die("fin");
