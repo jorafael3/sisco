@@ -66,9 +66,8 @@ $yearant = $year - 1;
 if ($_SESSION["canal_id"] > 2) {
 	$sql = " SELECT a.*, d.bodega as bodegaret FROM covidsales as a
 	left join covidpickup as d on d.orden= a.secuencia  
-	where canal = ".$_SESSION["canal_id"]." and convert (a.fecha,date)  between '$desde' and '$hasta' and a.anulada <>'1'  
+	where canal = " . $_SESSION["canal_id"] . " and convert (a.fecha,date)  between '$desde' and '$hasta' and a.anulada <>'1'  
 	order by a.secuencia desc ";
-
 } else {
 
 	$sql = " SELECT a.*, d.bodega as bodegaret FROM covidsales as a
@@ -86,6 +85,7 @@ echo "Coincidencias:" . $count;
 
 echo "<br><table border=1 cellpadding=10 cellspacing=0 width = 90% align='center' class=\"table\"><tr>
 <th align=center width=  5% >#</th>
+<th align=center width=  5% >canal</th>
 <th align=center width=  5% >Cédula</th>
 <th align=center width= 10% >Nombre</th>
 <th align=center width=  5% >Teléfono</th>
@@ -118,6 +118,25 @@ while ($row = mysqli_fetch_array($result)) {
 	} else {
 		echo "<td>" . $sec . "</td>";
 	}
+	//*** AGREGAR PROVEEDOR */
+
+	$ca = (int)$row["canal"];
+	if ($ca == 1) {
+		$ca = "CallCenter";
+	} else if ($ca == 2) {
+		$ca = "WEB";
+	} else if ($ca == 0) {
+		$ca = "OnLine";
+	} else if ($ca == 3) {
+		$ca = 'Proveedor1';
+	} else if ($ca == 4) {
+		$ca = 'Proveedor2';
+	} else if ($ca == 5) {
+		$ca = 'Proveedor3';
+	} else if ($ca == 6) {
+		$ca = 'Rappi';
+	}
+	echo "<td>" . $ca . "</td>";
 	echo "<td>" . $row['cedula'] . "</td>";
 	echo "<td>" . $row['nombres'] . "</td>";
 	echo "<td>" . $row['celular'] . "</td>";

@@ -401,6 +401,7 @@
                 <option value="Proveedor1">Proveedor1</option>
                 <option value="Proveedor2">Proveedor2</option>
                 <option value="Proveedor3">Proveedor3</option>
+                <option value="Rappi">Rappi</option>
                 <option value="Otro">Otro</option>
             </select>
         </td>

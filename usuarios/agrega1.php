@@ -77,6 +77,7 @@ include("../barramenu.php");
    <option value=3>proveedor1</option>
    <option value=4>proveedor2</option>
    <option value=5>proveedor3</option>
+   <option value=6>Rappi</option>
    </select></td></tr>
    <th><left>Mail:</th><td>    
 <!-- 

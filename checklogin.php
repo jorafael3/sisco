@@ -32,6 +32,8 @@ while ($row = mysqli_fetch_array($result)) {
 
       $nivel = $row['nivel'];
       $usuario = $row['usuario'];
+	//*** AGREGAR PROVEEDOR */
+
       $ca = (int)$row["canal"];
       // // $canal = "asdasd";
       if ($ca == 1) {
@@ -46,7 +48,9 @@ while ($row = mysqli_fetch_array($result)) {
             $ca = 'Proveedor2';
       } else if ($ca == 5) {
             $ca = 'Proveedor3';
-      }
+      }else if ($ca == 6) {
+		$ca = 'Rappi';
+	}
 
       $_SESSION["nivel"] = $nivel;
       $_SESSION["usuario"] = $usuario;

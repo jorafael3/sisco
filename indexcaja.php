@@ -79,7 +79,7 @@ if ($_SESSION["canal_id"]  > 2) {
 		left join covidcaja as c on  a.secuencia = c.transaccion
 		left join covidpickup as d on a.secuencia= d.orden 
 		where (a.factura ='' or (a.factura <>'' and a.estado ='Verif. pago' ) ) and a.estado <>'Facturado' and a.anulada <>'1' 
-		and a.fecha >'2020-09-23' and a.canal = ".$_SESSION["canal_id"]."
+		and a.fecha >'2020-09-23' and a.canal = " . $_SESSION["canal_id"] . "
 		group by a.secuencia 
 		order by a.secuencia desc
 ";
@@ -177,15 +177,37 @@ while ($row = mysqli_fetch_array($result)) {
 		echo "<td>" . $row['formapago'] . "</td>";
 	}
 
-	if ($row['canal'] == 0) {
-		echo "<td>" . $row['vendedor'] . "<br>(Online)</td>";
-	} else {
-		if ($row['canal'] == 1) {
-			echo "<td>" . $row['vendedor'] . "<br>(Callcenter)</td>";
-		} else {
-			echo "<td>" . $row['vendedor'] . "<br>(Web)</td>";
-		}
+	//*** AGREGAR PROVEEDOR */
+	$ca = $row["canal"];
+	if ($ca == 1) {
+		$ca = "CallCenter";
+	} else if ($ca == 2) {
+		$ca = "WEB";
+	} else if ($ca == 0) {
+		$ca = "OnLine";
+	} else if ($ca == 3) {
+		$ca = 'Proveedor1';
+	} else if ($ca == 4) {
+		$ca = 'Proveedor2';
+	} else if ($ca == 5) {
+		$ca = 'Proveedor3';
+	} else if ($ca == 6) {
+		$ca = 'Rappi';
+	}else if ($ca == "") {
+		$ca = '';
 	}
+	echo "<td>" . $row['vendedor'] . "<br>(".$ca.")</td>";
+
+
+	// if ($row['canal'] == 0) {
+	// 	echo "<td>" . $row['vendedor'] . "<br>(Online)</td>";
+	// } else {
+	// 	if ($row['canal'] == 1) {
+	// 		echo "<td>" . $row['vendedor'] . "<br>(Callcenter)</td>";
+	// 	} else {
+	// 		echo "<td>" . $row['vendedor'] . "<br>(Web)</td>";
+	// 	}
+	// }
 
 	echo "<td>" . $row['fecha'] . "</td>";
 
