@@ -309,6 +309,7 @@
                 <option value="LinkToPay">Link To Pay</option>
                 <option value="Directo">Crédito Directo</option>
                 <option value="Tienda">Pago en tienda </option>
+                <option value="Rappi">Rappi</option>
             </select>
         </td>
         </tr>

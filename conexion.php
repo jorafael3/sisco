@@ -15,8 +15,8 @@ if (mysqli_connect_errno()) {
 
 
 
-// $link = mssql_connect("10.5.1.3:1433", "jairo", "qwertys3gur0");
-// date_default_timezone_set('America/Guayaquil');
+$link = mssql_connect("10.5.1.3:1433", "jairo", "qwertys3gur0");
+date_default_timezone_set('America/Guayaquil');
 
 
 
